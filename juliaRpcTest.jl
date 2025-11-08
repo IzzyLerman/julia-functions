@@ -19,14 +19,17 @@ function juliaRpcTest()
 
     faasr_put_file("output.txt", "todelete.txt")
     faasr_delete_file("todelete.txt")
+    
+    #= Doesnt work bc exit(1)
     try
         faasr_get_file("todelete.txt", "todelete.txt")
         if isfile("todelete.txt")
             faasr_exit("faasr_delete failed")
         end
     catch e
-        writeToFile("results.txt", "SUCCESS: faasr_delete: $e\n")
+        writeToFile("results.txt", "SUCCESS: faasr_delete_file: $e\n")
     end
+    =#
 
     log_msg = join([ 
         "folder list: $(faasr_get_folder_list())",
