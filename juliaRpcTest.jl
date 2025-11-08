@@ -15,7 +15,7 @@ function juliaRpcTest()
         faasr_exit("faasr_get doesnt match faasr_put")
     end
 
-    writeToFile("results.txt", "SUCCESS: faasr_put/faasr_get\n")
+    writeToFile("results.txt", "SUCCESS: faasr_put/faasr_get\n", "w")
 
     faasr_put_file("output.txt", "todelete.txt")
     faasr_delete_file("todelete.txt")
