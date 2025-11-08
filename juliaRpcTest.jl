@@ -1,11 +1,11 @@
-function writeToFile(filename, content)
-    open(filename,"a") do f
+function writeToFile(filename, content, mode="a")
+    open(filename,mode) do f
         write(f, content)
     end
 end
 
 function juliaRpcTest()
-    writeToFile("output.txt", "content") 
+    writeToFile("output.txt", "content", "w") 
 
     faasr_put_file("output.txt", "output.txt")
     faasr_get_file("remote_output.txt", "output.txt")
