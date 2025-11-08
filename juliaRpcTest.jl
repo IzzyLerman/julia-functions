@@ -18,14 +18,14 @@ function juliaRpcTest()
     writeToFile("results.txt", "SUCCESS: faasr_put/faasr_get\n")
 
     faasr_put_file("output.txt", "todelete.txt")
-    faasr_delete("todelete.txt")
+    faasr_delete_file("todelete.txt")
     try
         faasr_get_file("todelete.txt", "todelete.txt")
         if isfile("todelete.txt")
             faasr_exit("faasr_delete failed")
         end
     catch e
-        writeToFile("results.txt", "SUCCESS: faasr_delete: $e")
+        writeToFile("results.txt", "SUCCESS: faasr_delete: $e\n")
     end
 
     log_msg = join([ 
@@ -38,6 +38,6 @@ function juliaRpcTest()
     faasr_put_file("results.txt", "results.txt")
 
     faasr_log("All RPCs Passed")
-    faasr_return()
+    faasr_return(true)
 
 end
