@@ -1,7 +1,11 @@
-function juliaRpcTest()
-    open("output.txt","w") do f
-        write(f, "content")
+function writeToFile(filename, content)
+    open(filename,"a") do f
+        write(f, content)
     end
+end
+
+function juliaRpcTest()
+    writeToFile("output.txt", "content") 
 
     faasr_put_file("output.txt", "output.txt")
     faasr_get_file("remote_output.txt", "output.txt")
@@ -11,6 +15,8 @@ function juliaRpcTest()
         faasr_exit("faasr_get doesnt match faasr_put")
     end
 
+    writeToFile("results.txt", "SUCCESS: faasr_put/faasr_get\n")
+
     faasr_put_file("output.txt", "todelete.txt")
     faasr_delete("todelete.txt")
     try
@@ -19,16 +25,19 @@ function juliaRpcTest()
             faasr_exit("faasr_delete failed")
         end
     catch e
-        println("SUCCESS: Get fails on deleted file: $e")
+        writeToFile("results.txt", "SUCCESS: faasr_delete: $e")
     end
 
-    faasr_log("Test log")
-    println(faasr_get_folder_list())
-    println(faasr_rank())
-    println(faasr_get_s3_creds())
-    println(faasr_invocation_id())
+    log_msg = join([ 
+        "folder list: $(faasr_get_folder_list())",
+        "rank: $(faasr_rank())",
+        "s3 creds: $(faasr_get_s3_creds())",
+        "invocation id: $(faasr_invocation_id())"
+    ], "\n")
+    writeToFile("results.txt", log_msg)
+    faasr_put_file("results.txt", "results.txt")
 
-    println("All RPCs Passed")
+    faasr_log("All RPCs Passed")
     faasr_return()
 
 end
