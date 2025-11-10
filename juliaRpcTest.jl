@@ -5,8 +5,12 @@ function writeToFile(filename, content, mode="a")
 end
 
 function juliaRpcTest()
-    writeToFile("output.txt", "content", "w") 
+    invocationId = faasr_invocation_id()
+    resultsFile = "results_$invocationId.txt"
 
+    writeToFile(resultsFile, "RESULTS: faasr_invocation_id: $invocationId\n", "w")
+
+    writeToFile("output.txt", "content", "w") 
     faasr_put_file("output.txt", "output.txt")
     faasr_get_file("remote_output.txt", "output.txt")
 
@@ -15,32 +19,27 @@ function juliaRpcTest()
         faasr_exit("faasr_get doesnt match faasr_put")
     end
 
-    writeToFile("results.txt", "SUCCESS: faasr_put/faasr_get\n", "w")
+    writeToFile(resultsFile, "SUCCESS: faasr_put\nSUCCESS: faasr_get\n")
 
-    faasr_put_file("output.txt", "todelete.txt")
-    faasr_delete_file("todelete.txt")
-    
-    #= Doesnt work bc exit(1)
-    try
-        faasr_get_file("todelete.txt", "todelete.txt")
-        if isfile("todelete.txt")
-            faasr_exit("faasr_delete failed")
-        end
-    catch e
-        writeToFile("results.txt", "SUCCESS: faasr_delete_file: $e\n")
-    end
-    =#
+    toDeleteFile = "todelete_$invocationId.txt"
+    faasr_put_file("output.txt", toDeleteFile)
+    faasr_delete_file(toDeleteFile)
 
-    log_msg = join([ 
-        "folder list: $(faasr_get_folder_list())",
-        "rank: $(faasr_rank())",
-        "s3 creds: $(faasr_get_s3_creds())",
-        "invocation id: $(faasr_invocation_id())"
-    ], "\n")
-    writeToFile("results.txt", log_msg)
-    faasr_put_file("results.txt", "results.txt")
+    folderList = faasr_get_folder_list()
+    writeToFile(resultsFile, "RESULTS: get_folder_list: $folderList\n")
+    writeToFile(resultsFile, "RESULTS: rank: $(faasr_rank())\n")
+    writeToFile(resultsFile, "RESULTS: get_s3_creds: $(faasr_get_s3_creds())\n")
 
-    faasr_log("All RPCs Passed")
+    if toDeleteFile in folderList
+        faasr_exit("faasr_delete_file failed to delete $toDeleteFile")
+    else
+        writeToFile(resultsFile, "SUCCESS: faasr_put\nSUCCESS: faasr_get\n")
+    end 
+
+    faasr_log("Testing faasr_log: $invocationId")
+
+    writeToFile(resultsFile, "All RPCs Passed")
+    faasr_put_file(resultsFile, resultsFile)
     faasr_return(true)
 
 end
