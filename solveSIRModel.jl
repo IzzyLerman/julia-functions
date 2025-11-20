@@ -1,6 +1,6 @@
 using DifferentialEquations
 using Plots
-using CSV
+import CSV
 using DataFrames
 
 #== 
@@ -68,7 +68,7 @@ function solveSIRModel()
     plot!(p1, title="SIR Epidemic Model")
 
     # Mark the peak
-    scatter!(p1, [peak_t], [peak_I], label="Peak infection", 
+    scatter!(p1, [t_max], [I_max], label="Peak infection", 
              markersize=8, markercolor=:red, markerstrokewidth=2)
 
     # Save the plot to file
