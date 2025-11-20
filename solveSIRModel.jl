@@ -30,7 +30,7 @@ function solveSIRModel()
     inputFile = "data.csv"
     faasr_get_file(inputFile, inputFile) 
 
-    # Expecting columns: beta, gamma, N, S_0, I_0, R_0, t_max
+    # Expecting columns: beta, gamma, N, S0, I0, R0, tmax
     data = CSV.read(inputFile, DataFrame)
     Beta = data.beta[1]
     Gamma = data.gamma[1]
